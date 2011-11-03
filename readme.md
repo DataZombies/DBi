@@ -6,12 +6,12 @@ WebSQL database initialization, database schema tool and storage management
 ## DBi handles all the work of creating a WebSQL database as well as local and session storage.
 
 DBi creates:
-- tables
-- indices
-- triggers
-- views
+* tables
+* indices
+* triggers
+* views
 
-…and populates the tables all from a single JSON file.
+...and populates the tables all from a single JSON file.
 
 ### Step 1 - Include the Script Tag in Your HTML5 Markup
 
@@ -70,7 +70,7 @@ The minimum JSON schema would look like this:
             {"id":3, "fname":"Garry", "lname":"Kasparov"}]}]}}
 ```
 
-You can see that tables can be created by either putting the DDL in the sql attribute (the Games table) or define each column (the Players table). See the schema files in this repo for more examples
+You can see that tables can be created by either putting the DDL in the sql attribute (the Games table) or define each column (the Players table). See the schema files in this repo for more examples.
 
 ### Step 3 - Creating the Database
 In your JavaScript code initialize your database variable.
@@ -92,7 +92,7 @@ __schemaFile__: The path to the JSON schema file. _Required._
 From here you can use all the transaction and executeSQL for your development.
 
 ### Step 3a - Outputting the Database Schema
-In the console type…
+In the console type...
 
 ``` js
 dbWebApp.outputSchema();
