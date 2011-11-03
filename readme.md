@@ -5,7 +5,7 @@ WebSQL database initialization, database schema tool and storage management
 
 ## DBi handles all the work of creating a WebSQL database as well as local and session storage.
 
-DBi creates:
+DBi creates...
 * tables
 * indices
 * triggers
