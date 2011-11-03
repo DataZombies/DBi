@@ -1,9 +1,7 @@
 # DataZombie's DBi v0.1
 (pronounced Debi)
 
-WebSQL database initialization, database schema tool and storage management
-
-## DBi handles all the work of creating an iOS or Safari WebSQL database as well as local and session storage.
+## DBi handles all the work of creating an iOS or Safari WebSQL database and manages local/session storages.
 
 DBi creates...
 
