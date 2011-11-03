@@ -6,6 +6,7 @@ WebSQL database initialization, database schema tool and storage management
 ## DBi handles all the work of creating an iOS or Safari WebSQL database as well as local and session storage.
 
 DBi creates...
+
 * tables
 
 * indices
