@@ -7,8 +7,11 @@ WebSQL database initialization, database schema tool and storage management
 
 DBi creates...
 * tables
+
 * indices
+
 * triggers
+
 * views
 
 ...and populates the tables all from a single JSON file.
@@ -85,8 +88,11 @@ dbWebApp = new DBi({
 ```
 
 __debug__: verbose and helpful messages sent to the console. _Optional. Default false_
+
 __jsonAsynchronous__: load the JSON schema file asynchronously. _Optional. Default false_
+
 __reset__: delete all storages and dump all database objects; a fresh start. _Optional. Default false_
+
 __schemaFile__: The path to the JSON schema file. _Required._
 
 From here you can use all the transaction and executeSQL for your development.
