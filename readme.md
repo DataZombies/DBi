@@ -20,7 +20,7 @@ DBi creates...
 ```
 
 ### Step 2 - Define the Database Schema
-All DBi JSON schema files has one required object, database, and one optional property, generationTimeStamp, and three optional objects, userAgent and storage. generationTimeStamp are userAgent generated during schema output.
+All DBi JSON schema files has one required object, database, one optional object, storage, and two optional properties, generationTimeStamp and userAgent. generationTimeStamp and userAgent are generated during schema output.
 
 ``` js
 {"generationTimeStamp":"",
