@@ -2,7 +2,7 @@
 (pronounced Debi)
 
 ## DBi handles all the work of creating an iOS or Safari WebSQL database and manages local/session storages.
-
+[Google Group](https://groups.google.com/group/datazombies-dbi)
 DBi creates...
 
 * tables
