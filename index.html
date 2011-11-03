@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>db tests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="./DBi_v0.1.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+  var d = document,
+      delay,
+      dbTest;
+
+  function loadUp(j) {
+    var setDebugReset = function () {
+      dbTest = new DBi({
+        schemaFile: j,
+        jsonAsynchronous: d.getElementById('chkAsynchronous').checked ? true : false,
+        debug: d.getElementById('chkDebug').checked ? true : false,
+        reset: d.getElementById('chkReset').checked ? true : false
+      });
+    };
+
+    setDebugReset();
+    timerDB();   
+  }
+
+  function timerDB() {
+    var temp;
+    if (dbTest.isInitialized) {
+      d.getElementById('logger').innerHTML = '<pre>shortName: ' + dbTest.shortName + '<br \/>version: ' + dbTest.version + '<br \/>longName: ' + dbTest.longName + '<br \/>maxSize: ' + dbTest.maxSize + ' bytes (' + ~~ ((dbTest.maxSize / 10488576 * 1000) + 0.5) / 1000 + ' MB)<br \/>isInitialized: ' + dbTest.isInitialized + '</pre>';
+      clearTimeout(delay);
+    } else {
+      delay = setTimeout('timerDB()', 100);
+    }
+  }
+
+  function timerJSON() {
+    var temp;
+    if (dbTest.schemaReady) {
+      if (d.getElementById('chkPPJSON').checked === true) {
+        temp = '<pre>' + JSON.stringify(dbTest.schema, null, 2) + '</pre>';
+      } else {
+        temp = JSON.stringify(dbTest.schema);
+      }
+      d.getElementById('SchemaOutput').innerHTML = temp;
+      clearTimeout(delay);
+    } else {
+      delay = setTimeout('timerJSON()', 100);
+    }
+  }
+
+  function toggleLoadInit() {
+    var temp;
+    if (d.getElementById('chkReset').checked) {
+      temp = 'Reset localStorage, sessionStorage & Database';
+    } else {
+      temp = 'Open Database';
+    }
+    d.getElementById('cmdLoadInit').innerHTML = temp;
+  }
+
+  function init() {
+    loadUp('./schema_1stRun/schema.json');
+//    loadUp('./schema_v2/schema.json');
+//    loadUp('./schema_v3/schema.json');
+    d.getElementById('chkReset').checked = '';
+    d.getElementById('chkReset').disabled = 'true';
+    d.getElementById('cmdLoadInit').disabled = 'true';
+    d.getElementById('cmdUpgrade2').disabled = 'true';
+    d.getElementById('cmdUpgrade3').disabled = 'true';
+    d.getElementById('cmdOutput').disabled = false;
+  }
+  
+  function Upgrade2() {
+    loadUp('./schema_v2/schema.json');
+    d.getElementById('cmdUpgrade2').disabled = 'true';
+  }
+  
+  function Upgrade3() {
+    loadUp('./schema_v3/schema.json');
+    d.getElementById('cmdUpgrade2').disabled = 'true';
+    d.getElementById('cmdUpgrade3').disabled = 'true';
+  }
+  
+  function schema() {
+    d.getElementById('SchemaOutput').innerHTML = '';
+    dbTest.outputSchema();
+    timerJSON();
+  }
+</script>
+</head>
+<body>
+<h1>Control Panel</h1>
+<table>
+  <tr>
+    <td><input id="chkAsynchronous" type="checkbox" value="debug" /></td>
+    <td><label for="chkAsynchronous">Get JSON Asynchronously</label></td><td id="logger" rowspan="5" style="border:thin black solid;vertical-align:top;width:350px;"></td>
+  </tr>
+  <tr>
+    <td><input id="chkDebug" type="checkbox" value="debug" checked="checked" /></td>
+    <td><label for="chkDebug">List debugging messages in Console</label></td>
+  </tr>
+  <tr>
+    <td><input id="chkReset" type="checkbox" value="reset" onclick="toggleLoadInit();" /></td>
+    <td><label for="chkReset">Reset localStorage, sessionStorage & Database</label></td>
+  </tr>
+  <tr>
+    <td><input id="chkPPJSON" type="checkbox" value="reset" checked="checked" /></td>
+    <td><label for="chkPPJSON">Pretty-print JSON Schema</label></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <button id="cmdLoadInit" onclick="init();" style="width:100%">Open Database</button><br />
+      <button id="cmdUpgrade2" onclick="Upgrade2();" style="width:100%" disabled="disabled">Upgrade to v2.0</button><br />
+      <button id="cmdUpgrade3" onclick="Upgrade3();" style="width:100%" disabled="disabled">Upgrade to v3.0</button><br />
+      <button id="cmdOutput" onclick="schema();" style="width:100%" disabled="disabled">Output Database Schema</button>
+    </td>
+  </tr>
+</table>
+<div id="SchemaOutput"></div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{"generationTimeStamp":"2011-01-15T10:06:12.814Z",
+ "userAgent":"Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-us) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+ "storage":
+    {"local":
+        {"reference1":"localstorage, sessionStorage & database dump based on \"Abusing HTML 5 Structured Client-side Storage\" by Alberto Trivero (http://trivero.secdiscover.com/html5whitepaper.pdf)",
+         "reference2":"Chess Tournament Database from http://mobile.tutsplus.com/tutorials/android/android-sqlite",
+         "reference3":"Bart's real name from http://en.wikipedia.org/wiki/Bart_Simpson",
+         "reference4":"Bobby Fischer's mname and correct spelling of his lname from http://www.nndb.com/people/455/000024383"},
+     "session":
+        {"Nexus6":"Roy Batty: \"I've seen things you people wouldn't believe. Attack ships on fire off the shoulder of Orion. I watched C-beams glitter in the dark near the Tannhauser gate. All those moments will be lost in time... like tears in rain... Time to die.\""}},
+ "database":
+    {"shortName":"dbCT",
+     "version":"2.0",
+     "longName":"Chess Tournament Database",
+     "maxSize":"1048576",
+     "tables":[
+        {"name":"Games",
+         "sql":"CREATE TABLE Games (id INTEGER PRIMARY KEY AUTOINCREMENT,gamename TEXT,weight REAL DEFAULT .10 CHECK (weight<=1));",
+         "records":[
+            {"id":1, "gamename":"Semi-Final", "weight":0.25},
+            {"id":2, "gamename":"Warm-up Heat 1", "weight":0.1},
+            {"id":3, "gamename":"Warm-up Heat 2", "weight":0.1},
+            {"id":4, "gamename":"Warm-up Heat 3", "weight":0.1},
+            {"id":5, "gamename":"Warm-up Heat 4", "weight":0.1},
+            {"id":6, "gamename":"Final", "weight":0.35}]},
+        {"name":"Players",
+         "columns":
+            {"id":"INTEGER PRIMARY KEY AUTOINCREMENT",
+             "fname":"TEXT NOT NULL",
+             "mname":"TEXT DEFAULT '' NOT NULL",
+             "lname":"TEXT NOT NULL"},
+         "records":[
+            {"id":1, "fname":"Bobby", "mname":"James", "lname":"Fischer"},
+            {"id":2, "fname":"Bartholomew", "mname":"JoJo", "lname":"Simpson"},
+            {"id":3, "fname":"Garry", "mname":"", "lname":"Kasparov"}]}],
+     "indices":[
+        {"name":"Index1",
+         "sql":"CREATE UNIQUE INDEX Index1 on Players (id ASC);"},
+        {"name":"Index2",
+         "sql":"CREATE UNIQUE INDEX Index2 on Games (id ASC);"}],
+     "triggers":[
+        {"name":"Trigger1",
+         "sql":"CREATE TRIGGER Trigger1 BEFORE INSERT ON Games FOR EACH ROW BEGIN SELECT * FROM Games; END"}],
+     "views":[
+        {"name":"Report_Players",
+         "sql":"CREATE VIEW Report_Players AS SELECT Players.fname||' '|| Players.lname AS PlayerName FROM Players;"}],
+     "upgrades":[
+        {"version":"2.0",
+         "step_1":[
+            {"sql":"ALTER TABLE Players ADD mname TEXT DEFAULT '' NOT NULL;"},
+            {"sql":"UPDATE Players SET mname=?, lname=? WHERE id=?;", "values":["James", "Fischer", 1]},
+            {"sql":"UPDATE Players SET mname=?, lname=? WHERE id=?;", "values":["JoJo", "Simpson", 2]}],
+         "step_2":[
+            {"table":"Games",
+             "addRecords":true}]}]}}

@@ -1,0 +1,36 @@
+{"generationTimeStamp":"2011-01-06T16:48:17.814Z",
+ "userAgent":"Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-us) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+ "storage":
+    {"local":
+        {"reference1":"localstorage, sessionStorage & database dump based on \"Abusing HTML 5 Structured Client-side Storage\" by Alberto Trivero (http://trivero.secdiscover.com/html5whitepaper.pdf)",
+         "reference2":"Chess Tournament Database from http://mobile.tutsplus.com/tutorials/android/android-sqlite/"},
+     "session":
+        {"Nexus6":"Roy Batty: \"I've seen things you people wouldn't believe. Attack ships on fire off the shoulder of Orion. I watched C-beams glitter in the dark near the Tannhauser gate. All those moments will be lost in time... like tears in rain... Time to die.\""}},
+ "database":
+    {"shortName":"dbCT",
+     "version":"1.0",
+     "longName":"Chess Tournament Database",
+     "maxSize":"1048576",
+     "tables":[
+        {"name":"Games",
+         "sql":"CREATE TABLE Games (id INTEGER PRIMARY KEY AUTOINCREMENT,gamename TEXT,weight REAL DEFAULT .10 CHECK (weight<=1));"},
+        {"name":"Players",
+         "columns":
+            {"id":"INTEGER PRIMARY KEY AUTOINCREMENT",
+             "fname":"TEXT NOT NULL",
+             "lname":"TEXT NOT NULL"},
+         "records":[
+            {"id":1, "fname":"Bobby", "lname":"Fisher"},
+            {"id":2, "fname":"Bart", "lname":"Simpsen"},
+            {"id":3, "fname":"Garry", "lname":"Kasparov"}]}],
+     "indices":[
+        {"name":"Index1",
+         "sql":"CREATE UNIQUE INDEX Index1 on Players (id ASC);"},
+        {"name":"Index2",
+         "sql":"CREATE UNIQUE INDEX Index2 on Games (id ASC);"}],
+     "triggers":[
+        {"name":"Trigger1",
+         "sql":"CREATE TRIGGER Trigger1 BEFORE INSERT ON Games FOR EACH ROW BEGIN SELECT * FROM Games; END;"}],
+     "views":[
+        {"name":"Report_Players",
+         "sql":"CREATE VIEW Report_Players AS SELECT Players.fname||' '|| Players.lname AS PlayerName FROM Players;"}]}}

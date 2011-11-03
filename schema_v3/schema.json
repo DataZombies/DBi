@@ -1,0 +1,93 @@
+{"generationTimeStamp":"2011-02-10T09:13:01.024Z",
+ "userAgent":"Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-us) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+ "storage":
+    {"local":
+        {"reference1":"localstorage, sessionStorage & database dump based on \"Abusing HTML 5 Structured Client-side Storage\" by Alberto Trivero (http://trivero.secdiscover.com/html5whitepaper.pdf)",
+         "reference2":"Chess Tournament Database from http://mobile.tutsplus.com/tutorials/android/android-sqlite",
+         "reference3":"Bart's real name from http://en.wikipedia.org/wiki/Bart_Simpson",
+         "reference4":"Bobby Fischer's mname and correct spelling of his lname from http://www.nndb.com/people/455/000024383"},
+     "session":
+        {"Nexus6":"Roy Batty: \"I've seen things you people wouldn't believe. Attack ships on fire off the shoulder of Orion. I watched C-beams glitter in the dark near the Tannhauser gate. All those moments will be lost in time... like tears in rain... Time to die.\""}},
+ "database":
+    {"shortName":"dbCT",
+     "version":"3.0",
+     "longName":"Chess Tournament Database",
+     "maxSize":"1048576",
+     "tables":[
+        {"name":"Players",
+         "columns":
+            {"id":"INTEGER PRIMARY KEY AUTOINCREMENT",
+             "fname":"TEXT NOT NULL",
+             "mname":"TEXT DEFAULT '' NOT NULL",
+             "lname":"TEXT NOT NULL"},
+         "records":[
+            {"id":1, "fname":"Bobby", "mname":"James", "lname":"Fischer"},
+            {"id":2, "fname":"Bartholomew", "mname":"JoJo", "lname":"Simpson"},
+            {"id":3, "fname":"Garry", "mname":"", "lname":"Kasparov"}]},
+        {"name":"GameResults",
+         "sql":"CREATE TABLE GameResults (playerid INTEGER REFERENCES Players(id),gameid INTEGER REFERENCES Games(id),score INTEGER CHECK (score<=100 AND score>=0),PRIMARY KEY (playerid, gameid));",
+         "columns":
+            {"playerid":"INTEGER REFERENCES Players(id)",
+             "gameid":"INTEGER REFERENCES Games(id)",
+             "score":"INTEGER CHECK (score<=100 AND score>=0)"},
+         "tableConstraint":"PRIMARY KEY (playerid, gameid)",
+         "records":[
+            {"playerid":1, "gameid":1, "score":82},
+            {"playerid":1, "gameid":2, "score":88},
+            {"playerid":1, "gameid":3, "score":78},
+            {"playerid":1, "gameid":4, "score":90},
+            {"playerid":1, "gameid":5, "score":85},
+            {"playerid":1, "gameid":6, "score":94},
+            {"playerid":2, "gameid":1, "score":10},
+            {"playerid":2, "gameid":2, "score":60},
+            {"playerid":2, "gameid":3, "score":50},
+            {"playerid":2, "gameid":4, "score":55},
+            {"playerid":2, "gameid":5, "score":45},
+            {"playerid":2, "gameid":6, "score":65},
+            {"playerid":3, "gameid":1, "score":100},
+            {"playerid":3, "gameid":2, "score":100},
+            {"playerid":3, "gameid":3, "score":100},
+            {"playerid":3, "gameid":4, "score":100},
+            {"playerid":3, "gameid":5, "score":100},
+            {"playerid":3, "gameid":6, "score":100}]},
+        {"name":"Games",
+         "sql":"CREATE TABLE Games (id INTEGER PRIMARY KEY AUTOINCREMENT,gamename TEXT,weight REAL DEFAULT .10 CHECK (weight<=1));",
+         "records":[
+            {"id":1, "gamename":"Semi-Final", "weight":0.25},
+            {"id":2, "gamename":"Warm-up Heat 1", "weight":0.1},
+            {"id":3, "gamename":"Warm-up Heat 2", "weight":0.1},
+            {"id":4, "gamename":"Warm-up Heat 3", "weight":0.1},
+            {"id":5, "gamename":"Warm-up Heat 4", "weight":0.1},
+            {"id":6, "gamename":"Final", "weight":0.35}]}],
+     "indices":[
+        {"name":"Index1",
+         "sql":"CREATE UNIQUE INDEX Index1 on Players (id ASC);"},
+        {"name":"Index2",
+         "sql":"CREATE UNIQUE INDEX Index2 on Games (id ASC);"},
+        {"name":"Index3",
+         "sql":"CREATE UNIQUE INDEX Index3 on GameResults (playerid ASC, gameid ASC);"}],
+     "triggers":[
+        {"name":"Trigger1",
+         "sql":"CREATE TRIGGER Trigger1 BEFORE INSERT ON Games FOR EACH ROW BEGIN SELECT * FROM Games; END"}],
+     "views":[
+        {"name":"Report_Players",
+         "sql":"CREATE VIEW Report_Players AS SELECT Players.fname||' '|| Players.lname AS PlayerName FROM Players;"},
+        {"name":"Report_Results",
+         "sql":"CREATE VIEW Report_Results AS SELECT Players.lname||', '|| Players.fname||' '|| Players.mname AS PlayerName, SUM(Games.weight*GameResults.score) AS TotalWeightedScore FROM GameResults JOIN Players ON (GameResults.playerid=Players.id) JOIN Games ON (GameResults.gameid=Games.id) GROUP BY GameResults.playerid ORDER BY TotalWeightedScore DESC;"}],
+     "upgrades":[
+        {"version":"2.0",
+         "step_1":[
+            {"sql":"ALTER TABLE Players ADD mname TEXT DEFAULT '' NOT NULL;"},
+            {"sql":"UPDATE Players SET mname=?, lname=? WHERE id=?;", "values":["James", "Fischer", 1]},
+            {"sql":"UPDATE Players SET mname=?, lname=? WHERE id=?;", "values":["JoJo", "Simpson", 2]}],
+         "step_2":[
+            {"table":"Games",
+             "addRecords":true}]},
+        {"version":"3.0",
+         "step_1":[
+            {"table":"GameResults",
+             "newTable":true,
+             "addRecords":true}],
+         "step_2":[
+            {"sql":"CREATE VIEW Report_Results AS SELECT Players.lname||', '|| Players.fname||' '|| Players.mname AS PlayerName, SUM(Games.weight*GameResults.score) AS TotalWeightedScore FROM GameResults JOIN Players ON (GameResults.playerid=Players.id) JOIN Games ON (GameResults.gameid=Games.id) GROUP BY GameResults.playerid ORDER BY TotalWeightedScore DESC;"},
+            {"sql":"CREATE UNIQUE INDEX Index3 on GameResults (playerid ASC, gameid ASC);"}]}]}}
