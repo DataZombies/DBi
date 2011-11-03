@@ -3,17 +3,8 @@
 
 ## DBi handles all the work of creating an iOS or Safari WebSQL database and manages local/session storages.
 [Google Group](https://groups.google.com/group/datazombies-dbi)
-DBi creates...
 
-* tables
-
-* indices
-
-* triggers
-
-* views
-
-...and populates the tables all from a single JSON file.
+DBi creates, tables, indices, triggers & views and populates the tables all from a single JSON file that's outputted from DBi.
 
 ### Step 1 - Include the Script Tag in Your HTML5 Markup
 
