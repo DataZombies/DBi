@@ -33,7 +33,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         debug: false,
         jsonAsynchronous: false,
         reset: false,
-        schemaFile: null
+        schemaFile: null,
+        schemaObject: null
       };
 
       // Apply user's settings
@@ -81,7 +82,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     //****************************************************************************
     // initialization ()
     // Initialize, create & populate and/or upgrade a database in one transaction
-    // with a JSON object.
+    // with a JSON file or object.
     //****************************************************************************
     initialization: function () {
       var jDB, json, jStorage, that = this,
@@ -306,8 +307,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
           // under construction
         },
 
-        // load a JSON data file asynchronously or non-asynchronously depending on the value in jsonAsynchronous
-        AE_35 = function (jsonURL) {
+        // load a JSON object or a JSON data file asynchronously/non-asynchronously depending on the value in jsonAsynchronous
+        AE_35 = function (jsonObj, jsonURL) {
           var jsonData = new XMLHttpRequest(),
               jsonStatus = false,
               processJSONdata = function () {
@@ -350,29 +351,37 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 }
               };
 
-          jsonData.open("GET", jsonURL, that.settings.jsonAsynchronous);
-          try {
-            jsonData.send(null);
-          } catch (err) {
-            that._errorHandler(null, null, err);
-            jsonData = null;
-          }
-          if (that.settings.jsonAsynchronous) {
-            jsonData.onreadystatechange = function () {
-              if (jsonData.readyState === 4) {
-                handleJSONresponse();
-                processJSONdata();
-              }
-            };
+          if(typeof (jsonURL) !== 'undefined' && jsonURL !== null) {
+            jsonData.open("GET", jsonURL, that.settings.jsonAsynchronous);
+            try {
+              jsonData.send(null);
+            } catch (err) {
+              that._errorHandler(null, null, err);
+              jsonData = null;
+            }
+            if (that.settings.jsonAsynchronous) {
+              jsonData.onreadystatechange = function () {
+                if (jsonData.readyState === 4) {
+                  handleJSONresponse();
+                  processJSONdata();
+                }
+              };
+            } else {
+              handleJSONresponse();
+              processJSONdata();
+            }
           } else {
-            handleJSONresponse();
+            jsonData = jsonObj;
+            jsonStatus = true;
             processJSONdata();
           }
         };
-      if (typeof (that.settings.schemaFile) !== 'undefined' && that.settings.schemaFile !== null) {
-        AE_35(that.settings.schemaFile);
+
+      if((typeof (that.settings.schemaFile) !== 'undefined' && that.settings.schemaFile !== null) ||
+      (typeof (that.settings.schemaObject) !== 'undefined' && that.settings.schemaObject !== null)) {
+        AE_35(that.settings.schemaObject, that.settings.schemaFile);
       } else {
-        that._errorHandler(null, null, 'Error - schemaFile is not defined.');
+        that._errorHandler(null, null, 'Error - schemaFile or schemaObject is not defined.');
       }
     },
 

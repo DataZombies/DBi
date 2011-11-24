@@ -1,95 +1,103 @@
-<!DOCTYPE HTML>
+<!doctype html>
 <html>
 <head>
 <title>db tests</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<script src="./DBi_v0.1.js" type="text/javascript" charset="utf-8"></script>
+<script src="./DBi.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" charset="utf-8">
   var d = document,
-      delay,
-      dbTest;
+      dbTest, delay,
 
-  function loadUp(j) {
-    var setDebugReset = function () {
-      dbTest = new DBi({
-        schemaFile: j,
-        jsonAsynchronous: d.getElementById('chkAsynchronous').checked ? true : false,
-        debug: d.getElementById('chkDebug').checked ? true : false,
-        reset: d.getElementById('chkReset').checked ? true : false
-      });
-    };
+      loadUp = function (j) {
+        var setDebugReset = function () {
+            dbTest = new DBi({
+              debug: d.getElementById('chkDebug').checked || false,
+              jsonAsynchronous: d.getElementById('chkAsynchronous').checked || false,
+              reset: d.getElementById('chkReset').checked || false,
+              schemaFile: j,
+              schemaObject: null
+            });
+          };
 
-    setDebugReset();
-    timerDB();   
-  }
+        setDebugReset();
+        timerDB();
+      },
 
-  function timerDB() {
-    var temp;
-    if (dbTest.isInitialized) {
-      d.getElementById('logger').innerHTML = '<pre>shortName: ' + dbTest.shortName + '<br \/>version: ' + dbTest.version + '<br \/>longName: ' + dbTest.longName + '<br \/>maxSize: ' + dbTest.maxSize + ' bytes (' + ~~ ((dbTest.maxSize / 10488576 * 1000) + 0.5) / 1000 + ' MB)<br \/>isInitialized: ' + dbTest.isInitialized + '</pre>';
-      clearTimeout(delay);
-    } else {
-      delay = setTimeout('timerDB()', 100);
-    }
-  }
+      timerDB = function () {
+        if (dbTest.isInitialized) {
+          d.getElementById('logger').innerHTML = '<pre>shortName: ' + dbTest.shortName + '<br \/>version: ' + dbTest.version + '<br \/>longName: ' + dbTest.longName + '<br \/>maxSize: ' + dbTest.maxSize + ' bytes (' + ~~ ((dbTest.maxSize / 10488576 * 1000) + 0.5) / 1000 + ' MB)<br \/>isInitialized: ' + dbTest.isInitialized + '</pre>';
+          clearTimeout(delay);
+        } else {
+          delay = setTimeout(timerDB, 100);
+        }
+      },
 
-  function timerJSON() {
-    var temp;
-    if (dbTest.schemaReady) {
-      if (d.getElementById('chkPPJSON').checked === true) {
-        temp = '<pre>' + JSON.stringify(dbTest.schema, null, 2) + '</pre>';
-      } else {
-        temp = JSON.stringify(dbTest.schema);
-      }
-      d.getElementById('SchemaOutput').innerHTML = temp;
-      clearTimeout(delay);
-    } else {
-      delay = setTimeout('timerJSON()', 100);
-    }
-  }
+      outputSchema = function (db, prettyprint, functionStarted) {
+        if (typeof (functionStarted) === 'undefined') {
+          db.outputSchema();
+          functionStarted = true;
+          newWindow = window.open('_blank', db.longName + ' Schema', 'scrollbars=1,resizable=1');
+          newWindow.document.open();
+        }
+        setTimeout(function () {
+          if (db.schemaReady) {
+            if (prettyprint) {
+              setTimeout(function () {
+                newWindow.document.write('<html><head><title>' + db.longName + ' Schema</title></head><body><pre>');
+                newWindow.document.write(JSON.stringify(db.schema, null, 2));
+                newWindow.document.write('</pre></body></html>');
+                newWindow.document.close();
+              }, 10);
+            } else {
+              setTimeout(function () {
+                newWindow.document.write('<html><head><title>' + db.longName + ' Schema</title></head><body>');
+                newWindow.document.write(JSON.stringify(db.schema));
+                newWindow.document.write('</body></html>');
+                newWindow.document.close();
+              }, 10);
+            }
+          } else {
+            outputSchema(db, (prettyprint || false), functionStarted);
+          }
+        }, 0);
+      },
 
-  function toggleLoadInit() {
-    var temp;
-    if (d.getElementById('chkReset').checked) {
-      temp = 'Reset localStorage, sessionStorage & Database';
-    } else {
-      temp = 'Open Database';
-    }
-    d.getElementById('cmdLoadInit').innerHTML = temp;
-  }
+      toggleLoadInit = function () {
+        var temp;
+        if (d.getElementById('chkReset').checked) {
+          temp = 'Reset localStorage, sessionStorage & Database';
+        } else {
+          temp = 'Open Database';
+        }
+        d.getElementById('cmdLoadInit').innerHTML = temp;
+      },
 
-  function init() {
-    loadUp('./schema_1stRun/schema.json');
-//    loadUp('./schema_v2/schema.json');
-//    loadUp('./schema_v3/schema.json');
-    d.getElementById('chkReset').checked = '';
-    d.getElementById('chkReset').disabled = 'true';
-    d.getElementById('cmdLoadInit').disabled = 'true';
-    d.getElementById('cmdUpgrade2').disabled = 'true';
-    d.getElementById('cmdUpgrade3').disabled = 'true';
-    d.getElementById('cmdOutput').disabled = false;
-  }
-  
-  function Upgrade2() {
-    loadUp('./schema_v2/schema.json');
-    d.getElementById('cmdUpgrade2').disabled = 'true';
-  }
-  
-  function Upgrade3() {
-    loadUp('./schema_v3/schema.json');
-    d.getElementById('cmdUpgrade2').disabled = 'true';
-    d.getElementById('cmdUpgrade3').disabled = 'true';
-  }
-  
-  function schema() {
-    d.getElementById('SchemaOutput').innerHTML = '';
-    dbTest.outputSchema();
-    timerJSON();
-  }
+      init = function () {
+          loadUp('./schema_1stRun/schema.json');
+//          loadUp('./schema_v2/schema.json');
+//          loadUp('./schema_v3/schema.json');
+        d.getElementById('chkReset').checked = '';
+        d.getElementById('chkReset').disabled = 'true';
+        d.getElementById('cmdLoadInit').disabled = 'true';
+        d.getElementById('cmdUpgrade2').disabled = 'true';
+        d.getElementById('cmdUpgrade3').disabled = 'true';
+        d.getElementById('cmdOutput').disabled = false;
+      },
+
+      Upgrade2 = function () {
+        loadUp('./schema_v2/schema.json');
+        d.getElementById('cmdUpgrade2').disabled = 'true';
+      },
+
+      Upgrade3 = function () {
+        loadUp('./schema_v3/schema.json');
+        d.getElementById('cmdUpgrade2').disabled = 'true';
+        d.getElementById('cmdUpgrade3').disabled = 'true';
+      };
 </script>
 </head>
 <body>
-<h1>Control Panel</h1>
+<h1>DBi Control Panel</h1>
 <table>
   <tr>
     <td><input id="chkAsynchronous" type="checkbox" value="debug" /></td>
@@ -112,10 +120,9 @@
       <button id="cmdLoadInit" onclick="init();" style="width:100%">Open Database</button><br />
       <button id="cmdUpgrade2" onclick="Upgrade2();" style="width:100%" disabled="disabled">Upgrade to v2.0</button><br />
       <button id="cmdUpgrade3" onclick="Upgrade3();" style="width:100%" disabled="disabled">Upgrade to v3.0</button><br />
-      <button id="cmdOutput" onclick="schema();" style="width:100%" disabled="disabled">Output Database Schema</button>
+      <button id="cmdOutput" onclick="outputSchema(dbTest, d.getElementById('chkPPJSON').checked || false);" style="width:100%" disabled="disabled">Output Database Schema</button>
     </td>
   </tr>
 </table>
-<div id="SchemaOutput"></div>
 </body>
 </html>
