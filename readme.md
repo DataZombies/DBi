@@ -1,4 +1,4 @@
-# DataZombie's DBi v0.1
+# DataZombie's DBi v0.2
 (pronounced Debi)
 
 __DBi handles all the work of creating an iOS or Safari WebSQL database and manages local/session storages.__
