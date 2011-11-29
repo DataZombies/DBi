@@ -53,7 +53,7 @@ The minimum JSON schema would look like this:
      "longName":"Chess Tournament Database",
      "maxSize":"1048576"}}
 ```
-Database informtion with one table:
+Database information with one table:
 
 ``` js
   {"database":
