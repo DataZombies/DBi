@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>DBi by DataZombies</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>DBi</h1>
+        <p>WebSQL database initialization, database schema tool and storage management</p>
+
+        <p class="view"><a href="https://github.com/DataZombies/DBi">View the Project on GitHub <small>DataZombies/DBi</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/DataZombies/DBi/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/DataZombies/DBi/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/DataZombies/DBi">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>DataZombie's DBi v0.2</h1>
+
+<p>(pronounced Debi)</p>
+
+<p><strong>DBi handles all the work of creating an iOS or Safari WebSQL database and manages local/session storages.</strong></p>
+
+<p>DBi creates, tables, indices, triggers &amp; views and populates the tables all from a single JSON file that's outputted from DBi.</p>
+
+<p><a href="https://groups.google.com/group/datazombies-dbi">Google Group</a></p>
+
+<p>If you find that DBi has been a benefit to you project please donate to the cause via PayPal (<a href="http://tinyurl.com/2fpmx27">http://tinyurl.com/2fpmx27</a>). Any amount is appreciated.</p>
+
+<h2>Step 1 - Include the Script Tag in Your HTML5 Markup</h2>
+
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"./DBi.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+<h2>Step 2 - Define the Database Schema</h2>
+
+<p>All DBi JSON schema files has one required object, database, one optional object, storage, and two optional properties, generationTimeStamp and userAgent. generationTimeStamp and userAgent are generated during schema output.</p>
+
+<div class="highlight"><pre><span class="p">{</span><span class="s2">"generationTimeStamp"</span><span class="o">:</span><span class="s2">""</span><span class="p">,</span>
+ <span class="s2">"userAgent"</span><span class="o">:</span><span class="s2">""</span><span class="p">,</span>
+ <span class="s2">"storage"</span><span class="o">:</span> <span class="p">{},</span>
+ <span class="s2">"database"</span><span class="o">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>The database object is subdivided into five required attributes that define the database: shortName, version, longName, maxSize. The only required array is tables. The optional arrays define the database's indices, triggers, views and upgrades. Upgrades will be implemented in a future release.</p>
+
+<div class="highlight"><pre>  <span class="s2">"database"</span><span class="o">:</span>
+    <span class="p">{</span><span class="s2">"shortName"</span><span class="o">:</span><span class="s2">""</span><span class="p">,</span>
+     <span class="s2">"version"</span><span class="o">:</span><span class="s2">""</span><span class="p">,</span>
+     <span class="s2">"longName"</span><span class="o">:</span><span class="s2">""</span><span class="p">,</span>
+     <span class="s2">"maxSize"</span><span class="o">:</span><span class="s2">""</span><span class="p">,</span>
+     <span class="s2">"tables"</span><span class="o">:</span><span class="p">[],</span>
+     <span class="s2">"indices"</span><span class="o">:</span><span class="p">[],</span>
+     <span class="s2">"triggers"</span><span class="o">:</span><span class="p">[],</span>
+     <span class="s2">"views"</span><span class="o">:</span><span class="p">[],</span>
+     <span class="s2">"upgrades"</span><span class="o">:</span><span class="p">[]</span>
+  <span class="p">}</span>
+</pre></div>
+
+<p>The minimum you need to get started is the required database information. All other development and modifications can be done in the web browser's database interface (Safari Web Inspector) and outputted for implementation. More on output later.</p>
+
+<p>The minimum JSON schema would look like this:</p>
+
+<div class="highlight"><pre>  <span class="p">{</span><span class="s2">"database"</span><span class="o">:</span>
+    <span class="p">{</span><span class="s2">"shortName"</span><span class="o">:</span><span class="s2">"dbCT"</span><span class="p">,</span>
+     <span class="s2">"version"</span><span class="o">:</span><span class="s2">"1.0"</span><span class="p">,</span>
+     <span class="s2">"longName"</span><span class="o">:</span><span class="s2">"Chess Tournament Database"</span><span class="p">,</span>
+     <span class="s2">"maxSize"</span><span class="o">:</span><span class="s2">"1048576"</span><span class="p">}}</span>
+</pre></div>
+
+<p>Database information with one table:</p>
+
+<div class="highlight"><pre>  <span class="p">{</span><span class="s2">"database"</span><span class="o">:</span>
+    <span class="p">{</span><span class="s2">"shortName"</span><span class="o">:</span><span class="s2">"dbCT"</span><span class="p">,</span>
+     <span class="s2">"version"</span><span class="o">:</span><span class="s2">"1.0"</span><span class="p">,</span>
+     <span class="s2">"longName"</span><span class="o">:</span><span class="s2">"Chess Tournament Database"</span><span class="p">,</span>
+     <span class="s2">"maxSize"</span><span class="o">:</span><span class="s2">"1048576"</span><span class="p">},</span>
+     <span class="s2">"tables"</span><span class="o">:</span><span class="p">[</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="o">:</span><span class="s2">"Games"</span><span class="p">,</span>
+         <span class="s2">"sql"</span><span class="o">:</span><span class="s2">"CREATE TABLE Games (id INTEGER PRIMARY KEY AUTOINCREMENT,gamename TEXT,weight REAL DEFAULT .10 CHECK (weight&lt;=1));"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="o">:</span><span class="s2">"Players"</span><span class="p">,</span>
+         <span class="s2">"columns"</span><span class="o">:</span>
+            <span class="p">{</span><span class="s2">"id"</span><span class="o">:</span><span class="s2">"INTEGER PRIMARY KEY AUTOINCREMENT"</span><span class="p">,</span>
+             <span class="s2">"fname"</span><span class="o">:</span><span class="s2">"TEXT NOT NULL"</span><span class="p">,</span>
+             <span class="s2">"lname"</span><span class="o">:</span><span class="s2">"TEXT NOT NULL"</span><span class="p">},</span>
+         <span class="s2">"records"</span><span class="o">:</span><span class="p">[</span>
+            <span class="p">{</span><span class="s2">"id"</span><span class="o">:</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"fname"</span><span class="o">:</span><span class="s2">"Bobby"</span><span class="p">,</span> <span class="s2">"lname"</span><span class="o">:</span><span class="s2">"Fisher"</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">"id"</span><span class="o">:</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"fname"</span><span class="o">:</span><span class="s2">"Bart"</span><span class="p">,</span> <span class="s2">"lname"</span><span class="o">:</span><span class="s2">"Simpsen"</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">"id"</span><span class="o">:</span><span class="mi">3</span><span class="p">,</span> <span class="s2">"fname"</span><span class="o">:</span><span class="s2">"Garry"</span><span class="p">,</span> <span class="s2">"lname"</span><span class="o">:</span><span class="s2">"Kasparov"</span><span class="p">}]}]</span>
+</pre></div>
+
+<p>You can see that tables can be created by either putting the DDL in the sql attribute (the Games table) or define each column (the Players table). See the schema files in this repo for more examples.</p>
+
+<h2>Step 3 - Creating the Database</h2>
+
+<p>In your JavaScript code initialize your database variable.</p>
+
+<div class="highlight"><pre><span class="nx">dbWebApp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DBi</span><span class="p">({</span>
+  <span class="nx">debug</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">jsonAsynchronous</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">reset</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">schemaFile</span><span class="o">:</span> <span class="s1">'./schema_1stRun/schema.json'</span>
+<span class="p">});</span>
+</pre></div>
+
+<p><strong>debug</strong>: verbose and helpful messages sent to the console. <em>Optional. Default false</em></p>
+
+<p><strong>jsonAsynchronous</strong>: load the JSON schema file asynchronously. <em>Optional. Default false</em></p>
+
+<p><strong>reset</strong>: delete all storages and dump all database objects; a fresh start. <em>Optional. Default false</em></p>
+
+<p><strong>schemaFile</strong>: The path to the JSON schema file.</p>
+
+<p><strong>schemaObject</strong>: A JSON object.</p>
+
+<p>The database initlization must have a <strong>schemaFile</strong> or a <strong>schemaObject</strong>.</p>
+
+<p>From here you can use all the transaction and executeSQL for your development.</p>
+
+<h3>Step 3a - Outputting the Database Schema</h3>
+
+<p>In the console type...</p>
+
+<div class="highlight"><pre><span class="nx">dbWebApp</span><span class="p">.</span><span class="nx">outputSchema</span><span class="p">();</span>
+</pre></div>
+
+<p>Your database schema will be stored in dbWebApp.schema. See index.html for functions that output the schema to the browser window.</p>
+
+<p>DBi is provided with the MIT license. Please submit an issue if you find any bugs that need to be squished or features you would like to see. Feel free to fork this repo. Please submit pull requests for any fixes, enhancements or new features.</p>
+
+<h3>Change Log</h3>
+
+<p>2011-11-24 v0.2 Add the ability to pass a JSON object to DBi instead of a JSON file URL; improved index.html's JSON output function;</p>
+
+<p>2011-11-02 v0.1 Initial (alpha-betaish) release.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/DataZombies">DataZombies</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
